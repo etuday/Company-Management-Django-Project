@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card shadow p-4">
+    <h2 class="text-center mb-4 text-primary">
+      {% if form.instance.pk %}
+        ✏️ Update Company Details
+      {% else %}
+        ➕ Add New Company
+      {% endif %}
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Name Field -->
+      <div class="row mb-3">
+        <label class="col-sm-2 col-form-label text-end">Name:</label>
+        <div class="col-sm-10">
+          {{ form.name }}
+          {% if form.name.errors %}
+            <div class="text-danger small">{{ form.name.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- CEO Field -->
+      <div class="row mb-3">
+        <label class="col-sm-2 col-form-label text-end">CEO:</label>
+        <div class="col-sm-10">
+          {{ form.ceo }}
+          {% if form.ceo.errors %}
+            <div class="text-danger small">{{ form.ceo.errors }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Logo Field (Custom Layout) -->
+      <div class="row mb-3">
+        <label class="col-sm-2 col-form-label text-end">Logo:</label>
+        <div class="col-sm-10">
+          {% if form.instance.pk and form.instance.logo %}
+            <div class="d-flex align-items-center mb-2">
+              <span class="me-1">Currently:</span>
+              <a href="{{ form.instance.logo.url }}" target="_blank" class="me-2">{{ form.instance.logo.name }}</a>
+              {{ form.logo.clear_checkbox }}
+              <label for="{{ form.logo.clear_checkbox.id_for_label }}" class="ms-1">Clear</label>
+            </div>
+          {% endif %}
+          <div>
+            <label class="form-label">Change:</label>
+            {{ form.logo.as_widget }}
+            {% if form.logo.errors %}
+              <div class="text-danger small">{{ form.logo.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Logo Preview -->
+      {% if form.instance.pk and form.instance.logo %}
+      <div class="text-center mt-4">
+        <label class="form-label">Current Logo:</label><br>
+        <img src="{{ form.instance.logo.url }}" alt="Logo" class="img-thumbnail mb-3" width="150">
+      </div>
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="text-center mt-3">
+        <button type="submit" class="btn btn-success">
+          {% if form.instance.pk %}Update{% else %}Add{% endif %}
+        </button>
+        <a href="{% url 'list' %}" class="btn btn-secondary ms-2">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Styling -->
+<style>
+input, select, textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+label {
+  font-weight: 600;
+}
+</style>
+{% endblock %}
